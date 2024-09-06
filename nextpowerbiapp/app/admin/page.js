@@ -1,13 +1,23 @@
 'use client'
 
+import dynamic from 'next/dynamic'
 import Image from "next/image";
-import { PowerBIEmbed } from 'powerbi-client-react';
-import { models } from 'powerbi-client'
+//import { PowerBIEmbed } from 'powerbi-client-react';
 import React, { lazy, Suspense, useEffect, useState } from "react";
+// const PowerBIEmbed = dynamic(() => import('powerbi-client-react'), {
+//   ssr: false
+// })
+
+
+let PowerBIEmbed;
+
+PowerBIEmbed = dynamic(() => import('powerbi-client-react').then(component => component.PowerBIEmbed), {
+        ssr: false,
+      })
 
 export default function Home() {
-  const [token, setToken] = React.useState();;
-  const [embedUrl, setEmbedUrl] = React.useState();;
+  const [token, setToken] = React.useState();
+  const [embedUrl, setEmbedUrl] = React.useState();
 
   const getToken = async () => {
     const headers = { 'Content-Type': 'application/json' };
@@ -50,6 +60,9 @@ export default function Home() {
   //     getEmbeddedUrl();
   // }, [token]);
 
+  if(typeof window === 'undefined' || typeof self === 'undefined' || typeof document === 'undefined'){
+    return <div>Loading ...</div>
+  }
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-6 bg-gray-100 dark:bg-gray-900">
 
